@@ -7,5 +7,8 @@ To specify words, add `?words=one,two,three...` to the end of the URL in your ad
 
 To mark a word as scored for the red team, replace it with `r` in the address bar. Similarly you can use `b`, `n`, or `a` to represent blue, neutral, or assassin respectively.
 
+Here is a demo board of one possibility for a [completed game].
+
 [Codenames]: https://boardgamegeek.com/boardgame/178900/codenames
 [github.io]: http://madrob.github.io/codewords/
+[completed game]: http://madrob.github.io/codewords/?words=b,b,r,fair,mass,a,pole,r,r,b,turkey,n,r,cricket,bill,b,r,b,b,b,king,lap,r,n,tooth

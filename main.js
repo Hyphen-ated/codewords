@@ -7,9 +7,9 @@ const mheight = cheight / 2;
 const spacing = 10;
 const rounded = 10;
 
-var reds = ['incite', 'incite', 'incite', 'incite', 'incite', 'incite', 'incite', 'incite', 'incite']
-var blues = ['serum visions', 'serum visions', 'serum visions', 'serum visions', 'serum visions', 'serum visions', 'serum visions', 'serum visions', 'serum visions']
-var grays = ['endless one', 'endless one', 'endless one', 'endless one', 'endless one', 'endless one', 'endless one']
+var reds = ['incite.jpg', 'barbed.jpg', 'raiders.jpg', 'incite.jpg', 'barbed.jpg', 'raiders.jpg', 'incite.jpg', 'barbed.jpg', 'raiders.jpg']
+var blues = ['broodstar.jpg', 'egotist.jpg', 'broodstar.jpg', 'egotist.jpg', 'broodstar.jpg', 'egotist.jpg', 'broodstar.jpg', 'egotist.jpg', 'broodstar.jpg']
+var grays = ['chalice.jpg', 'endless.png', 'chalice.jpg', 'endless.png', 'chalice.jpg', 'endless.png', 'chalice.jpg']
 
 function to2d(n) {
     var row = n % 5;
@@ -25,21 +25,21 @@ function drawwords(context) {
     var i, p, img;
     for (i = 0; i < words.length; i++) {
         p = to2d(i);
-        if (words[i] == 'r') { // Red
+        if (words[i] == 'r') {
             img = new Image();
-            img.src = 'http://forums.goodgamery.com/includes/mtg/mtg_helper_cardfinder_v3.php?img&find=' + reds.pop();
+            img.src = 'images/' + reds.pop();
             context.drawImage(img, 0, 0, 223, 310, p.x, p.y, cwidth, cheight);
-        } else if (words[i] == 'b') { // Blue
+        } else if (words[i] == 'b') {
             img = new Image();
-            img.src = 'http://forums.goodgamery.com/includes/mtg/mtg_helper_cardfinder_v3.php?img&find=' + blues.pop();
-            context.drawImage(img, 0, 0, 223, 310, p.x, p.y, cwidth, cheight);
-        } else if (words[i] == 'n') { // Neutral
+            img.src = 'images/' + blues.pop();
+            context.drawImage(img, 0, 0, 222, 310, p.x, p.y, cwidth, cheight);
+        } else if (words[i] == 'n') {
             img = new Image();
-            img.src = 'http://forums.goodgamery.com/includes/mtg/mtg_helper_cardfinder_v3.php?img&find=' + grays.pop();
+            img.src = 'images/' + grays.pop();
             context.drawImage(img, 0, 0, 223, 310, p.x, p.y, cwidth, cheight);
         } else if (words[i] == 'a') { // Assassin
             img = new Image();
-            img.src = 'http://forums.goodgamery.com/includes/mtg/mtg_helper_cardfinder_v3.php?img&find=phage the untouchable';
+            img.src = 'images/phage.jpg';
             context.drawImage(img, 0, 0, 223, 310, p.x, p.y, cwidth, cheight);
         } else {
             roundRect(context, p.x, p.y, cwidth, cheight, rounded);

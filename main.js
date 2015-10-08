@@ -18,11 +18,18 @@ function to2d(n) {
 
 function drawwords(context) {
     var words = getParameter('words').split(',', 25);
-    for (var i = 0; i < words.length; i++) {
-        var p = to2d(i);
+    var i, p;
+    for (i = 0; i < words.length; i++) {
+        p = to2d(i);
         roundRect(context, p.x, p.y, cwidth, cheight, rounded);
         context.fillText(words[i], p.x + mwidth, p.y + mheight); 
     }
+    // In case we weren't given enough words...
+    for (i = words.length ; i < 25; i++) {
+        p = to2d(i);
+        roundRect(context, p.x, p.y, cwidth, cheight, rounded);
+        context.fillText(i, p.x + mwidth, p.y + mheight); 
+    }    
 }
 
 $(function(){

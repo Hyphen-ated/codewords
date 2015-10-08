@@ -4,7 +4,7 @@ const cwidth = 111;
 const mwidth = cwidth / 2;
 const cheight = 155;
 const mheight = cheight / 2;
-const spacing = 10;
+const spacing = 5;
 const rounded = 10;
 
 var reds = ['incite.jpg', 'barbed.jpg', 'raiders.jpg', 'incite.jpg', 'barbed.jpg', 'raiders.jpg', 'incite.jpg', 'barbed.jpg', 'raiders.jpg']
@@ -43,7 +43,7 @@ function drawwords(context) {
             context.drawImage(img, 0, 0, 223, 310, p.x, p.y, cwidth, cheight);
         } else {
             roundRect(context, p.x, p.y, cwidth, cheight, rounded);
-            context.fillText(words[i], p.x + mwidth, p.y + mheight);
+            context.fillText(words[i].toUpperCase(), p.x + mwidth, p.y + mheight);
         }
     }
     // In case we weren't given enough words...
@@ -57,6 +57,7 @@ function drawwords(context) {
 $(function(){
     var canvas = document.getElementById('c');
     var context = canvas.getContext('2d');
+    context.font = '12pt Calibri';
     context.textAlign = 'center';
     drawwords(context);
 });

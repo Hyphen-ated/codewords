@@ -11,6 +11,16 @@ var reds = ['incite.jpg', 'barbed.jpg', 'raiders.jpg', 'incite.jpg', 'barbed.jpg
 var blues = ['broodstar.jpg', 'egotist.jpg', 'broodstar.jpg', 'egotist.jpg', 'broodstar.jpg', 'egotist.jpg', 'broodstar.jpg', 'egotist.jpg', 'broodstar.jpg']
 var grays = ['chalice.jpg', 'endless.png', 'chalice.jpg', 'endless.png', 'chalice.jpg', 'endless.png', 'chalice.jpg']
 
+function drawCard(context, p, word) {
+    roundRect(context, p.x, p.y, cwidth, cheight, rounded);
+    context.fillText(word, p.x + mwidth, p.y + mheight); 
+}
+function drawImage(context, p, src) {
+    img = new Image();
+    img.src = 'images/' + src;
+    context.drawImage(img, 0, 0, 222, 310, p.x, p.y, cwidth, cheight);    
+}
+
 function to2d(n) {
     var row = n % 5;
     var col = Math.floor(n / 5);
@@ -26,31 +36,21 @@ function drawwords(context) {
     for (i = 0; i < words.length; i++) {
         p = to2d(i);
         if (words[i] == 'r') {
-            img = new Image();
-            img.src = 'images/' + reds.pop();
-            context.drawImage(img, 0, 0, 223, 310, p.x, p.y, cwidth, cheight);
+            drawImage(context, p, reds.pop());
         } else if (words[i] == 'b') {
-            img = new Image();
-            img.src = 'images/' + blues.pop();
-            context.drawImage(img, 0, 0, 222, 310, p.x, p.y, cwidth, cheight);
+            drawImage(context, p, blues.pop());
         } else if (words[i] == 'n') {
-            img = new Image();
-            img.src = 'images/' + grays.pop();
-            context.drawImage(img, 0, 0, 223, 310, p.x, p.y, cwidth, cheight);
+            drawImage(context, p, grays.pop());
         } else if (words[i] == 'a') { // Assassin
-            img = new Image();
-            img.src = 'images/phage.jpg';
-            context.drawImage(img, 0, 0, 223, 310, p.x, p.y, cwidth, cheight);
+            drawImage(context, p, 'phage.jpg');
         } else {
-            roundRect(context, p.x, p.y, cwidth, cheight, rounded);
-            context.fillText(words[i].toUpperCase(), p.x + mwidth, p.y + mheight);
+            drawCard(context, p, words[i].toUpperCase());
         }
     }
     // In case we weren't given enough words...
     for (i = words.length ; i < 25; i++) {
         p = to2d(i);
-        roundRect(context, p.x, p.y, cwidth, cheight, rounded);
-        context.fillText(i + 1, p.x + mwidth, p.y + mheight); 
+        drawCard(context, p, i + 1);
     }    
 }
 
@@ -59,5 +59,9 @@ $(function(){
     var context = canvas.getContext('2d');
     context.font = '12pt Calibri';
     context.textAlign = 'center';
+    context.fillStyle = 'white';
+    context.rect(0, 0, canvas.width, canvas.height);
+    context.fill();
+    context.fillStyle = '#220022';
     drawwords(context);
 });

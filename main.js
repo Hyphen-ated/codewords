@@ -16,7 +16,6 @@ function drawCard(context, p, word) {
     context.fillText(word, p.x + mwidth, p.y + mheight); 
 }
 function drawImage(context, p, src) {
-    console.log(src);
     var img = new Image();
     img.src = 'images/' + src;
     img.onload = function() {

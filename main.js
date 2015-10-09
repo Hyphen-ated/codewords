@@ -34,6 +34,7 @@ function to2d(n) {
 
 function drawwords(context) {
     var words = getParameter('words').split(',', 25);
+    var inputs = $('input[name=word]');
     var i, p, img;
     for (i = 0; i < words.length; i++) {
         p = to2d(i);
@@ -48,12 +49,31 @@ function drawwords(context) {
         } else {
             drawCard(context, p, words[i].toUpperCase());
         }
+        inputs.get(i).value = words[i];
     }
     // In case we weren't given enough words...
     for (i = words.length ; i < 25; i++) {
         p = to2d(i);
         drawCard(context, p, i + 1);
+        inputs.get(i).value = i + 1;
     }    
+}
+
+function save() {
+    var search = '';
+    var sep = '?words=';
+
+    $('input[name=word]').each(function() {
+        search = search + sep + this.value;
+        sep = ',';
+    });
+
+    location.search = search;
+}
+
+function edit() {
+    $('#canvas, #words').toggle();
+    $(this).button('option', 'label', 'Done').off('click').click(save);
 }
 
 $(function(){
@@ -66,4 +86,8 @@ $(function(){
     context.fill();
     context.fillStyle = '#220022';
     drawwords(context);
+    $('#edit').button({
+        disabled: false,
+        label: 'Edit'
+    }).click(edit);
 });

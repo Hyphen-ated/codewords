@@ -1,14 +1,14 @@
 /**
- * http://stackoverflow.com/a/831060
+ * http://stackoverflow.com/a/831060 by Rafael
  */
 function getParameter(name) {
    if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
       return decodeURIComponent(name[1]);
-   return '';
+   return ''; // Local modification
 }
 
 /**
- * http://stackoverflow.com/a/3368118
+ * http://stackoverflow.com/a/3368118 by Juan Mendes
  *
  * Draws a rounded rectangle using the current state of the canvas.
  * If you omit the last three params, it will draw a rectangle

@@ -8,8 +8,8 @@ const spacing = 5;
 const rounded = 10;
 
 var reds = ['incite.jpg', 'barbed.jpg', 'raiders.jpg', 'incite.jpg', 'barbed.jpg', 'raiders.jpg', 'incite.jpg', 'barbed.jpg', 'raiders.jpg']
-var blues = ['broodstar.jpg', 'egotist.jpg', 'broodstar.jpg', 'egotist.jpg', 'broodstar.jpg', 'egotist.jpg', 'broodstar.jpg', 'egotist.jpg', 'broodstar.jpg']
-var grays = ['chalice.jpg', 'endless.png', 'chalice.jpg', 'endless.png', 'chalice.jpg', 'endless.png', 'chalice.jpg']
+var blues = ['broodstar.jpg', 'egotist.jpg', 'cryptic.jpg', 'egotist.jpg', 'broodstar.jpg', 'cryptic.jpg', 'broodstar.jpg', 'egotist.jpg', 'cryptic.jpg']
+var grays = ['chalice.jpg', 'endless.png', 'mutavault.jpg', 'endless.png', 'chalice.jpg', 'mutavault.jpg', 'chalice.jpg']
 
 function drawCard(context, p, word) {
     roundRect(context, p.x, p.y, cwidth, cheight, rounded);
@@ -19,7 +19,7 @@ function drawImage(context, p, src) {
     var img = new Image();
     img.src = 'images/' + src;
     img.onload = function() {
-        context.drawImage(img, 0, 0, 222, 310, p.x, p.y, cwidth, cheight);    
+        context.drawImage(img, 0, 0, img.width, img.height, p.x, p.y, cwidth, cheight);    
     }
 }
 

@@ -16,9 +16,11 @@ function drawCard(context, p, word) {
     context.fillText(word, p.x + mwidth, p.y + mheight); 
 }
 function drawImage(context, p, src) {
-    img = new Image();
+    var img = new Image();
     img.src = 'images/' + src;
-    context.drawImage(img, 0, 0, 222, 310, p.x, p.y, cwidth, cheight);    
+    img.onload = function() {
+        context.drawImage(img, 0, 0, 222, 310, p.x, p.y, cwidth, cheight);    
+    }
 }
 
 function to2d(n) {

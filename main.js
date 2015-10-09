@@ -7,17 +7,21 @@ const mheight = cheight / 2;
 const spacing = 5;
 const rounded = 10;
 
-var reds = ['incite.jpg', 'barbed.jpg', 'raiders.jpg', 'incite.jpg', 'barbed.jpg', 'raiders.jpg', 'incite.jpg', 'barbed.jpg', 'raiders.jpg']
-var blues = ['broodstar.jpg', 'egotist.jpg', 'cryptic.jpg', 'egotist.jpg', 'broodstar.jpg', 'cryptic.jpg', 'broodstar.jpg', 'egotist.jpg', 'cryptic.jpg']
-var grays = ['chalice.jpg', 'endless.png', 'mutavault.jpg', 'endless.png', 'chalice.jpg', 'mutavault.jpg', 'chalice.jpg']
+const reds = 3;
+const blues = 3;
+const neutrals = 2;
 
 function drawCard(context, p, word) {
     roundRect(context, p.x, p.y, cwidth, cheight, rounded);
     context.fillText(word, p.x + mwidth, p.y + mheight); 
 }
-function drawImage(context, p, src) {
+function drawImage(context, p, src, number) {
     var img = new Image();
-    img.src = 'images/' + src;
+    if (number === undefined) {
+        img.src = 'images/' + src;
+    } else {
+        img.src = 'images/' + src + '/' + number + '.jpg';
+    }
     img.onload = function() {
         context.drawImage(img, 0, 0, img.width, img.height, p.x, p.y, cwidth, cheight);    
     }
@@ -32,6 +36,10 @@ function to2d(n) {
     }
 }
 
+function randInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
 function drawwords(context) {
     var words = getParameter('words').split(',', 25);
     var inputs = $('input[name=word]');
@@ -39,11 +47,11 @@ function drawwords(context) {
     for (i = 0; i < words.length; i++) {
         p = to2d(i);
         if (words[i] == 'r') {
-            drawImage(context, p, reds.pop());
+            drawImage(context, p, 'red', randInt(reds));
         } else if (words[i] == 'b') {
-            drawImage(context, p, blues.pop());
+            drawImage(context, p, 'blue', randInt(blues));
         } else if (words[i] == 'n') {
-            drawImage(context, p, grays.pop());
+            drawImage(context, p, 'neutral', randInt(neutrals));
         } else if (words[i] == 'a') { // Assassin
             drawImage(context, p, 'phage.jpg');
         } else {

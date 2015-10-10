@@ -1,19 +1,13 @@
 /* vim: set ts=4 sw=4 tw=4 et : */
 
 const cwidth = 111;
-const mwidth = cwidth / 2;
 const cheight = 155;
-const mheight = cheight / 2;
 const spacing = 5;
 const rounded = 10;
 
-const reds = 3;
-const blues = 3;
-const neutrals = 2;
-
 function drawCard(context, p, word) {
     roundRect(context, p.x, p.y, cwidth, cheight, rounded);
-    context.fillText(word, p.x + mwidth, p.y + mheight); 
+    context.fillText(word, p.x + (cwidth / 2), p.y + (cheight / 2)); 
 }
 function drawImage(context, p, src, number) {
     var img = new Image();
@@ -36,10 +30,6 @@ function to2d(n) {
     }
 }
 
-function randInt(max) {
-    return Math.floor(Math.random() * max);
-}
-
 function drawwords(context) {
     var words = getParameter('words').split(',', 25);
     var inputs = $('input[name=word]');
@@ -47,11 +37,11 @@ function drawwords(context) {
     for (i = 0; i < words.length; i++) {
         p = to2d(i);
         if (words[i] == 'r') {
-            drawImage(context, p, 'red', randInt(reds));
+            drawImage(context, p, 'red', i % 9);
         } else if (words[i] == 'b') {
-            drawImage(context, p, 'blue', randInt(blues));
+            drawImage(context, p, 'blue', i % 9);
         } else if (words[i] == 'n') {
-            drawImage(context, p, 'neutral', randInt(neutrals));
+            drawImage(context, p, 'neutral', i % 3);
         } else if (words[i] == 'a') { // Assassin
             drawImage(context, p, 'phage.jpg');
         } else {

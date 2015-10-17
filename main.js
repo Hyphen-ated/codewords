@@ -5,8 +5,10 @@ const cheight = 155;
 const spacing = 5;
 const rounded = 10;
 
-function drawCard(context, p, word) {
-    roundRect(context, p.x, p.y, cwidth, cheight, rounded);
+function drawCard(context, p, word, color) {
+    context.fillStyle = color;
+    roundRect(context, p.x, p.y, cwidth, cheight, rounded, true);
+    context.fillStyle = '#220022';
     context.fillText(word, p.x + (cwidth / 2), p.y + (cheight / 2)); 
 }
 function drawImage(context, p, src, number) {
@@ -30,7 +32,10 @@ function to2d(n) {
     }
 }
 
-function drawwords(context) {
+function drawwords(context, assignments) {
+    if (assignments === undefined)
+        assignments = { red: [], blue: [], ass: [] };
+
     var words = getParameter('words').split(',', 25);
     var inputs = $('input[name=word]');
     var i, p, img;
@@ -45,14 +50,22 @@ function drawwords(context) {
         } else if (words[i] == 'a') { // Assassin
             drawImage(context, p, 'phage.jpg');
         } else {
-            drawCard(context, p, words[i].toUpperCase());
+            if ($.inArray(i, assignments.red) > -1) {
+                drawCard(context, p, words[i].toUpperCase(), '#ffb2b2');
+            } else if ($.inArray(i, assignments.blue) > -1) {
+                drawCard(context, p, words[i].toUpperCase(), '#b2b2ff');
+            } else if ($.inArray(i, assignments.ass) > -1) {
+                drawCard(context, p, words[i].toUpperCase(), '#b2b2b2');
+            } else {
+                drawCard(context, p, words[i].toUpperCase(), 'white');
+            }
         }
         inputs.get(i).value = words[i];
     }
     // In case we weren't given enough words...
     for (i = words.length ; i < 25; i++) {
         p = to2d(i);
-        drawCard(context, p, i + 1);
+        drawCard(context, p, i + 1, 'white');
         inputs.get(i).value = i + 1;
     }    
 }
@@ -69,11 +82,6 @@ function save() {
     location.search = search;
 }
 
-function edit() {
-    $('#canvas, #words').toggle();
-    $(this).button('option', 'label', 'Done').off('click').click(save);
-}
-
 $(function(){
     var canvas = document.getElementById('c');
     var context = canvas.getContext('2d');
@@ -84,8 +92,49 @@ $(function(){
     context.fill();
     context.fillStyle = '#220022';
     drawwords(context);
+
     $('#edit').button({
         disabled: false,
         label: 'Edit'
-    }).click(edit);
+    }).click(function() {
+        $('#canvas, #words, #teams').toggle();
+        $(this).button('option', 'label', 'Done').off('click').click(save);
+    });
+
+    $('#teams').button({
+        disabled: false,
+        label: 'Assign Teams'
+    }).click(function() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        // http://stackoverflow.com/a/20066663
+        var choices = Array.apply(null, {length: 25}).map(Number.call, Number);
+        var assignments = {
+            red: [],
+            blue: [],
+            ass: []
+        };
+
+        const randInt = function(n) {
+            return Math.floor(Math.random() * n);
+        };
+        const popRandom = function() {
+            var index = randInt(choices.length);
+            var value = choices[index];
+            choices.splice(index, 1);
+            return value;
+        };
+        for (var i = 0; i < 8; i++) { // Each color gets at least 8 cards.
+            assignments.red.push(popRandom());
+            assignments.blue.push(popRandom());
+        }
+        if (Math.random() > 0.5) { // Somebody gets an extra
+            assignments.red.push(popRandom());
+        } else {
+            assignments.blue.push(popRandom());
+        }
+        assignments.ass.push(popRandom());
+
+        drawwords(context, assignments);
+    });
 });

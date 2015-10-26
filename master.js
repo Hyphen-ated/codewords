@@ -1,6 +1,6 @@
 /* vim: set ts=4 sw=4 tw=4 et : */
 
-const master = [
+var master = [
     'Nut',
     'Worm',
     'Bugle',

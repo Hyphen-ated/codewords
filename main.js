@@ -41,7 +41,7 @@ function loadWords() {
     else var arry = paramWords.split(',', 25);
 
     for (var i = arry.length; i < 25; i++) {
-        arry.push(master[randInt(master.length)]);
+        arry.push(randomElement(master));
     }
     return arry;
 }
@@ -124,28 +124,18 @@ $(function(){
 
         // http://stackoverflow.com/a/20066663
         var choices = Array.apply(null, {length: 25}).map(Number.call, Number);
-        var assignments = {
-            red: [],
-            blue: [],
-            ass: []
-        };
+        var assignments = { red: [], blue: [], ass: [] };
 
-        const popRandom = function() {
-            var index = randInt(choices.length);
-            var value = choices[index];
-            choices.splice(index, 1);
-            return value;
-        };
         for (var i = 0; i < 8; i++) { // Each color gets at least 8 cards.
-            assignments.red.push(popRandom());
-            assignments.blue.push(popRandom());
+            assignments.red.push(randomElement(choices));
+            assignments.blue.push(randomElement(choices));
         }
         if (Math.random() > 0.5) { // Somebody gets an extra
-            assignments.red.push(popRandom());
+            assignments.red.push(randomElement(choices));
         } else {
-            assignments.blue.push(popRandom());
+            assignments.blue.push(randomElement(choices));
         }
-        assignments.ass.push(popRandom());
+        assignments.ass.push(randomElement(choices));
 
         drawwords(context, assignments);
     });

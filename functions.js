@@ -62,5 +62,11 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
 
 function randInt(n) {
     return Math.floor(Math.random() * n);
-};
+}
 
+function randomElement(arr) {
+    var index = randInt(arr.length);
+    var value = arr[index];
+    arr.splice(index, 1);
+    return value;
+}

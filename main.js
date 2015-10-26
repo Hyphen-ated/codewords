@@ -32,11 +32,25 @@ function to2d(n) {
     }
 }
 
+function loadWords() {
+    if ($('input[name=word]')[0].value !== '')
+        return $('input[name=word]').map(function(i, el) { return el.value; });
+
+    const paramWords = getParameter('words');
+    if (paramWords === undefined) var arry = new Array();
+    else var arry = paramWords.split(',', 25);
+
+    for (var i = arry.length; i < 25; i++) {
+        arry.push(master[randInt(master.length)]);
+    }
+    return arry;
+}
+
 function drawwords(context, assignments) {
     if (assignments === undefined)
         assignments = { red: [], blue: [], ass: [] };
 
-    var words = getParameter('words').split(',', 25);
+    var words = loadWords();
     var inputs = $('input[name=word]');
     var i, p, img;
     for (i = 0; i < words.length; i++) {
@@ -62,12 +76,6 @@ function drawwords(context, assignments) {
         }
         inputs.get(i).value = words[i];
     }
-    // In case we weren't given enough words...
-    for (i = words.length ; i < 25; i++) {
-        p = to2d(i);
-        drawCard(context, p, i + 1, 'white');
-        inputs.get(i).value = i + 1;
-    }    
 }
 
 function save() {
@@ -101,6 +109,13 @@ $(function(){
         $(this).button('option', 'label', 'Done').off('click').click(save);
     });
 
+    $('#new').button({
+        disabled: false,
+        label: 'New Board'
+    }).click(function() {
+        document.location.search = '';
+    });
+
     $('#teams').button({
         disabled: false,
         label: 'Assign Teams'
@@ -115,9 +130,6 @@ $(function(){
             ass: []
         };
 
-        const randInt = function(n) {
-            return Math.floor(Math.random() * n);
-        };
         const popRandom = function() {
             var index = randInt(choices.length);
             var value = choices[index];

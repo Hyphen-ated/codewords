@@ -4,7 +4,6 @@
 function getParameter(name) {
    if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
       return decodeURIComponent(name[1]);
-   return ''; // Local modification
 }
 
 /**
@@ -60,4 +59,8 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
     ctx.stroke();
   }
 }
+
+function randInt(n) {
+    return Math.floor(Math.random() * n);
+};
 

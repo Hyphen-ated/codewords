@@ -140,11 +140,27 @@ $(function(){
         drawwords(context, assignments);
     });
 
+    $('#forum').hide();
     $('#upload').button({
         disabled: false,
-        label: 'View Img'
+        label: 'Upload to Imgur'
     }).click(function() {
-        var pngUrl = canvas.toDataURL();
-        document.location.href = pngUrl;
+        var pngUrl = canvas.toDataURL().replace(/^data:image\/(png|jpg);base64,/, "");
+        $.ajax({
+            type: 'POST',
+            url: 'https://api.imgur.com/3/image',
+            headers: {
+                 'Authorization': 'Client-ID 2dcafd80b34a9b4'
+            },
+            dataType: 'json',
+            data: {
+                image : pngUrl,
+                type : 'base64'
+            },
+            success: function(result) {
+                const link = '[img]' + result.data.link + '[/img]';
+                $('#forum').text(link).show();
+            }
+        });
     });
 });

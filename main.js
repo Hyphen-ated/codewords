@@ -105,7 +105,7 @@ $(function(){
         disabled: false,
         label: 'Edit'
     }).click(function() {
-        $('#canvas, #words, #teams').toggle();
+        $('#canvas, #words, #teams, #upload').toggle();
         $(this).button('option', 'label', 'Done').off('click').click(save);
     });
 
@@ -138,5 +138,13 @@ $(function(){
         assignments.ass.push(randomElement(choices));
 
         drawwords(context, assignments);
+    });
+
+    $('#upload').button({
+        disabled: false,
+        label: 'View Img'
+    }).click(function() {
+        var pngUrl = canvas.toDataURL();
+        document.location.href = pngUrl;
     });
 });

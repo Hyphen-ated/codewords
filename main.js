@@ -146,6 +146,16 @@ $(function(){
         label: 'Upload to Imgur'
     }).click(function() {
         var pngUrl = canvas.toDataURL().replace(/^data:image\/(png|jpg);base64,/, "");
+
+        var token = Cookies.get('token');
+        if (token == undefined) {
+            $('#dialog')
+              .load('https://api.imgur.com/oauth2/authorize?client_id=2dcafd80b34a9b4&response_type=token')
+              .dialog({
+                  modal: true
+              });
+        }
+/*
         $.ajax({
             type: 'POST',
             url: 'https://api.imgur.com/3/image',
@@ -162,5 +172,6 @@ $(function(){
                 $('#forum').text(link).show();
             }
         });
+*/
     });
 });

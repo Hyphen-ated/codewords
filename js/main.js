@@ -56,7 +56,7 @@ function loadWords() {
 }
 
 function drawwords(context, assignments) {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     if (assignments === undefined)
         assignments = { red: [], blue: [], ass: [] };

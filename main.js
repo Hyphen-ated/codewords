@@ -116,7 +116,7 @@ function tryUpload(event) {
         }
     }
 
-    var pngUrl = canvas.toDataURL().replace(/^data:image\/(png|jpg);base64,/, "");
+    var pngUrl = document.getElementById('c').toDataURL().replace(/^data:image\/(png|jpg);base64,/, "");
     $.ajax({
         type: 'POST',
         url: 'https://api.imgur.com/3/image',

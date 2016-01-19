@@ -36,12 +36,20 @@ function loadWords() {
     if ($('input[name=word]')[0].value !== '')
         return $('input[name=word]').map(function(i, el) { return el.value; });
 
-    const paramWords = getParameter('words');
-    if (paramWords === undefined) var arry = new Array();
-    else var arry = paramWords.split(',', 25);
+    const stateWords = getParameter('state');
+    if (stateWords !== undefined) {
+        var arry = stateWords.split(',', 25);
+    } else {
+        const paramWords = getParameter('words');
+        if (paramWords !== undefined) {
+            var arry = paramWords.split(',', 25);
+        } else {
+            var arry = new Array();
+        }
 
-    for (var i = arry.length; i < 25; i++) {
-        arry.push(randomElement(master));
+        for (var i = arry.length; i < 25; i++) {
+            arry.push(randomElement(master));
+        }
     }
     return arry;
 }
@@ -78,16 +86,20 @@ function drawwords(context, assignments) {
     }
 }
 
-function save() {
+function readWords() {
     var search = '';
-    var sep = '?words=';
+    var sep = '';
 
     $('input[name=word]').each(function() {
         search = search + sep + this.value;
         sep = ',';
     });
 
-    location.search = search;
+    return search;
+}
+
+function save() {
+    location.search = '?words=' + readWords();
 }
 
 $(function(){
@@ -144,23 +156,24 @@ $(function(){
     $('#upload').button({
         disabled: false,
         label: 'Upload to Imgur'
-    }).click(function() {
-        var pngUrl = canvas.toDataURL().replace(/^data:image\/(png|jpg);base64,/, "");
-
-        var token = Cookies.get('token');
-        if (token == undefined) {
-            $('#dialog')
-              .load('https://api.imgur.com/oauth2/authorize?client_id=2dcafd80b34a9b4&response_type=token')
-              .dialog({
-                  modal: true
-              });
+    }).click(function(event) {
+        var token = Cookies.get('access_token');
+        if (token === undefined) {
+            token = getHash('access_token');
+            if (token === undefined) {
+                location.href = 'https://api.imgur.com/oauth2/authorize?client_id=042408054523c44&response_type=token&state=' + readWords();
+            } else {
+                Cookies.set('access_token', token);
+                Cookies.set('refresh_token', getHash('refresh_token'));
+            }
         }
-/*
+
+        var pngUrl = canvas.toDataURL().replace(/^data:image\/(png|jpg);base64,/, "");
         $.ajax({
             type: 'POST',
             url: 'https://api.imgur.com/3/image',
             headers: {
-                 'Authorization': 'Client-ID 2dcafd80b34a9b4'
+                 Authorization: 'Bearer ' + token
             },
             dataType: 'json',
             data: {
@@ -172,6 +185,5 @@ $(function(){
                 $('#forum').text(link).show();
             }
         });
-*/
     });
 });

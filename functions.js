@@ -6,6 +6,11 @@ function getParameter(name) {
       return decodeURIComponent(name[1]);
 }
 
+function getHash(name) {
+   if(name=(new RegExp('[#&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.hash))
+      return decodeURIComponent(name[1]);
+}
+
 /**
  * http://stackoverflow.com/a/3368118 by Juan Mendes
  *

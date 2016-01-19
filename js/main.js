@@ -47,8 +47,9 @@ function loadWords() {
             var arry = new Array();
         }
 
+        var words = master.slice();
         for (var i = arry.length; i < 25; i++) {
-            arry.push(randomElement(master));
+            arry.push(randomElement(words));
         }
     }
     return arry;

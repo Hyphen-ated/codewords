@@ -159,6 +159,11 @@ $(function(){
         label: 'New Board'
     }).click(function() {
         document.location.search = '';
+        document.location.hash = '';
+        $('input[name=word]').each(function() {
+            this.value = '';
+        });
+        drawwords(context);
     });
 
     $('#teams').button({

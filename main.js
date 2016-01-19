@@ -103,7 +103,7 @@ function save() {
 }
 
 function tryUpload(event) {
-    event.preventDefault();
+    if (event !== undefined) event.preventDefault();
 
     var token = Cookies.get('access_token');
     if (token === undefined) {

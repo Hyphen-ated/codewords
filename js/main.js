@@ -55,6 +55,8 @@ function loadWords() {
 }
 
 function drawwords(context, assignments) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
     if (assignments === undefined)
         assignments = { red: [], blue: [], ass: [] };
 
@@ -188,11 +190,9 @@ $(function(){
         disabled: false,
         label: 'New Board'
     }).click(function() {
-        document.location.search = '';
         document.location.hash = '';
-        $('input[name=word]').each(function() {
-            this.value = '';
-        });
+        document.location.search = '';
+        $('input[name=word]').each(function() { this.value = ''; });
         drawwords(context);
     });
 
@@ -200,8 +200,6 @@ $(function(){
         disabled: false,
         label: 'Assign Teams'
     }).click(function() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
         // http://stackoverflow.com/a/20066663
         var choices = Array.apply(null, {length: 25}).map(Number.call, Number);
         var assignments = { red: [], blue: [], ass: [] };

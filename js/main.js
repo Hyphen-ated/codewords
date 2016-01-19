@@ -102,18 +102,48 @@ function save() {
     location.search = '?words=' + readWords();
 }
 
-function tryUpload(event) {
-    if (event !== undefined) event.preventDefault();
+const aToken = 'access_token';
+const rToken = 'refresh_token';
 
-    var token = Cookies.get('access_token');
-    if (token === undefined) {
-        token = getHash('access_token');
-        if (token === undefined) {
-            location.href = 'https://api.imgur.com/oauth2/authorize?client_id=042408054523c44&response_type=token&state=' + readWords();
+function loadToken() {
+    var token;
+
+    // Check local storage
+    if (storageAvailable('localStorage')) {
+        token = localStorage.getItem(aToken);
+        if (token) return token;
+    }
+
+    // Check cookies
+    token = Cookies.get(aToken);
+    if (token) return token;
+
+    // Check URL response
+    token = getHash(aToken);
+    if (token) {
+        // Save the token info
+        if (storageAvailable('localStorage')) {
+            localStorage.setItem(aToken, token);
+            localStorage.setItem(rToken, getHash('refresh_token'));
         } else {
-            Cookies.set('access_token', token);
-            Cookies.set('refresh_token', getHash('refresh_token'));
+            Cookies.set(aToken, token);
+            Cookies.set(rToken, getHash('refresh_token'));
         }
+        return token;
+    }
+
+    return undefined;
+}
+
+function tryUpload(event) {
+    if (event) event.preventDefault();
+
+    const token = loadToken();
+    if (token === undefined) {
+        location.href = 'https://api.imgur.com/oauth2/authorize'
+            + '?client_id=042408054523c44'
+            + '&response_type=token'
+            + '&state=' + readWords();
     }
 
     var pngUrl = document.getElementById('c').toDataURL().replace(/^data:image\/(png|jpg);base64,/, "");

@@ -102,6 +102,39 @@ function save() {
     location.search = '?words=' + readWords();
 }
 
+function tryUpload(event) {
+    event.preventDefault();
+
+    var token = Cookies.get('access_token');
+    if (token === undefined) {
+        token = getHash('access_token');
+        if (token === undefined) {
+            location.href = 'https://api.imgur.com/oauth2/authorize?client_id=042408054523c44&response_type=token&state=' + readWords();
+        } else {
+            Cookies.set('access_token', token);
+            Cookies.set('refresh_token', getHash('refresh_token'));
+        }
+    }
+
+    var pngUrl = canvas.toDataURL().replace(/^data:image\/(png|jpg);base64,/, "");
+    $.ajax({
+        type: 'POST',
+        url: 'https://api.imgur.com/3/image',
+        headers: {
+             Authorization: 'Bearer ' + token
+        },
+        dataType: 'json',
+        data: {
+            image : pngUrl,
+            type : 'base64'
+        },
+        success: function(result) {
+            const link = '[img]' + result.data.link + '[/img]';
+            $('#forum').text(link).show();
+        }
+    });
+}
+
 $(function(){
     var canvas = document.getElementById('c');
     var context = canvas.getContext('2d');
@@ -156,34 +189,9 @@ $(function(){
     $('#upload').button({
         disabled: false,
         label: 'Upload to Imgur'
-    }).click(function(event) {
-        var token = Cookies.get('access_token');
-        if (token === undefined) {
-            token = getHash('access_token');
-            if (token === undefined) {
-                location.href = 'https://api.imgur.com/oauth2/authorize?client_id=042408054523c44&response_type=token&state=' + readWords();
-            } else {
-                Cookies.set('access_token', token);
-                Cookies.set('refresh_token', getHash('refresh_token'));
-            }
-        }
+    }).click(tryUpload);
 
-        var pngUrl = canvas.toDataURL().replace(/^data:image\/(png|jpg);base64,/, "");
-        $.ajax({
-            type: 'POST',
-            url: 'https://api.imgur.com/3/image',
-            headers: {
-                 Authorization: 'Bearer ' + token
-            },
-            dataType: 'json',
-            data: {
-                image : pngUrl,
-                type : 'base64'
-            },
-            success: function(result) {
-                const link = '[img]' + result.data.link + '[/img]';
-                $('#forum').text(link).show();
-            }
-        });
-    });
+    if (getParameter('state') !== undefined) {
+        tryUpload();
+    }
 });

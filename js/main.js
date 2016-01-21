@@ -33,25 +33,35 @@ function to2d(n) {
 }
 
 function loadWords() {
+    // Prefer loading from the existing text boxes
     if ($('input[name=word]')[0].value !== '')
         return $('input[name=word]').map(function(i, el) { return el.value; });
 
+    // Next try loading from state variable given by imgur
     const stateWords = getParameter('state');
-    if (stateWords !== undefined) {
-        var arry = stateWords.split(',', 25);
-    } else {
-        const paramWords = getParameter('words');
-        if (paramWords !== undefined) {
-            var arry = paramWords.split(',', 25);
-        } else {
-            var arry = new Array();
-        }
-
-        var words = master.slice();
-        for (var i = arry.length; i < 25; i++) {
-            arry.push(randomElement(words));
-        }
+    if (stateWords) {
+        return stateWords.split(',', 25).map(function(el) {
+            // When imgur returns state parameter it converts ' ' to '+'
+            return el.replace('+', ' ');
+        });
     }
+
+    // Next load from local use 'words' parameter
+    const paramWords = getParameter('words');
+    if (paramWords !== undefined) {
+        var arry = paramWords.split(',', 25);
+    } else {
+        var arry = new Array();
+    }
+
+    // And pad with random words
+    var words = master.slice();
+    for (var i = arry.length; i < 25; i++) {
+        // Check for duplicates, since we don't know the starting contents
+        var word = randomElement(words);
+        if ($.inArray(word, arry) == -1) arry.push(word);
+    }
+
     return arry;
 }
 

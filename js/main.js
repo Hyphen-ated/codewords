@@ -9,7 +9,7 @@ function drawCard(context, p, word, color) {
     context.fillStyle = color;
     roundRect(context, p.x, p.y, cwidth, cheight, rounded, true);
     context.fillStyle = '#220022';
-    context.fillText(word, p.x + (cwidth / 2), p.y + (cheight / 2)); 
+    context.fillText(word, p.x + (cwidth / 2), p.y + (cheight / 2));
 }
 function drawImage(context, p, src, number) {
     var img = new Image();
@@ -19,23 +19,24 @@ function drawImage(context, p, src, number) {
         img.src = 'images/' + src + '/' + number + '.jpg';
     }
     img.onload = function() {
-        context.drawImage(img, 0, 0, img.width, img.height, p.x, p.y, cwidth, cheight);    
-    }
+        context.drawImage(img, 0, 0, img.width, img.height, p.x, p.y, cwidth, cheight);
+    };
 }
 
 function to2d(n) {
-    var row = n % 5;
-    var col = Math.floor(n / 5);
+    const row = n % 5;
+    const col = Math.floor(n / 5);
     return {
-        x : row * (spacing + cwidth) + spacing,
-        y : col * (spacing + cheight) + spacing
-    }
+        x: row * (spacing + cwidth) + spacing,
+        y: col * (spacing + cheight) + spacing
+    };
 }
 
 function loadWords() {
     // Prefer loading from the existing text boxes
-    if ($('input[name=word]')[0].value !== '')
+    if ($('input[name=word]')[0].value !== '') {
         return $('input[name=word]').map(function(i, el) { return el.value; });
+    }
 
     // Next try loading from state variable given by imgur
     const stateWords = getParameter('state');
@@ -48,18 +49,21 @@ function loadWords() {
 
     // Next load from local use 'words' parameter
     const paramWords = getParameter('words');
+    var arry;
     if (paramWords !== undefined) {
-        var arry = paramWords.split(',', 25);
+        arry = paramWords.split(',', 25);
     } else {
-        var arry = new Array();
+        arry = [];
     }
 
     // And pad with random words
-    var words = master.slice();
-    for (var i = arry.length; i < 25; i++) {
+    var i, word, words = master.slice();
+    for (i = arry.length; i < 25; i += 1) {
         // Check for duplicates, since we don't know the starting contents
-        var word = randomElement(words);
-        if ($.inArray(word, arry) == -1) arry.push(word);
+        word = randomElement(words);
+        if ($.inArray(word, arry) === -1) {
+            arry.push(word);
+        }
     }
 
     return arry;
@@ -68,21 +72,22 @@ function loadWords() {
 function drawwords(context, assignments) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    if (assignments === undefined)
+    if (assignments === undefined) {
         assignments = { red: [], blue: [], ass: [] };
+    }
 
     var words = loadWords();
     var inputs = $('input[name=word]');
-    var i, p, img;
-    for (i = 0; i < words.length; i++) {
+    var i, p;
+    for (i = 0; i < words.length; i += 1) {
         p = to2d(i);
-        if (words[i] == 'r') {
+        if (words[i] === 'r') {
             drawImage(context, p, 'red', i % 9);
-        } else if (words[i] == 'b') {
+        } else if (words[i] === 'b') {
             drawImage(context, p, 'blue', i % 9);
-        } else if (words[i] == 'n') {
+        } else if (words[i] === 'n') {
             drawImage(context, p, 'neutral', i % 3);
-        } else if (words[i] == 'a') { // Assassin
+        } else if (words[i] === 'a') { // Assassin
             drawImage(context, p, 'phage.jpg');
         } else {
             if ($.inArray(i, assignments.red) > -1) {
@@ -124,12 +129,16 @@ function loadToken() {
     // Check local storage
     if (storageAvailable('localStorage')) {
         token = localStorage.getItem(aToken);
-        if (token) return token;
+        if (token) {
+            return token;
+        }
     }
 
     // Check cookies
     token = Cookies.get(aToken);
-    if (token) return token;
+    if (token) {
+        return token;
+    }
 
     // Check URL response
     token = getHash(aToken);
@@ -149,7 +158,9 @@ function loadToken() {
 }
 
 function tryUpload(event) {
-    if (event) event.preventDefault();
+    if (event) {
+        event.preventDefault();
+    }
 
     const token = loadToken();
     if (token === undefined) {
@@ -213,9 +224,10 @@ $(function(){
     }).click(function() {
         // http://stackoverflow.com/a/20066663
         var choices = Array.apply(null, {length: 25}).map(Number.call, Number);
-        var assignments = { red: [], blue: [], ass: [] };
+        var assignments = {red: [], blue: [], ass: [] };
 
-        for (var i = 0; i < 8; i++) { // Each color gets at least 8 cards.
+        var i;
+        for (i = 0; i < 8; i += 1) { // Each color gets at least 8 cards.
             assignments.red.push(randomElement(choices));
             assignments.blue.push(randomElement(choices));
         }

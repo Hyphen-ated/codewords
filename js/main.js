@@ -24,8 +24,8 @@ function drawImage(context, p, src, number) {
 }
 
 function to2d(n) {
-    const row = n % 5;
-    const col = Math.floor(n / 5);
+    const row = n % 6;
+    const col = Math.floor(n / 6);
     return {
         x: row * (spacing + cwidth) + spacing,
         y: col * (spacing + cheight) + spacing
@@ -41,7 +41,7 @@ function loadWords() {
     // Next try loading from state variable given by imgur
     const stateWords = getParameter('state');
     if (stateWords) {
-        return stateWords.split(',', 25).map(function(el) {
+        return stateWords.split(',', 36).map(function(el) {
             // When imgur returns state parameter it converts ' ' to '+'
             return el.replace('+', ' ');
         });
@@ -51,14 +51,14 @@ function loadWords() {
     const paramWords = getParameter('words');
     var arry;
     if (paramWords !== undefined) {
-        arry = paramWords.split(',', 25);
+        arry = paramWords.split(',', 36);
     } else {
         arry = [];
     }
 
     // And pad with random words
     var i, word, words = master.slice();
-    for (i = arry.length; i < 25; i += 1) {
+    for (i = arry.length; i < 36; i += 1) {
         // Check for duplicates, since we don't know the starting contents
         word = randomElement(words);
         if ($.inArray(word, arry) === -1) {
@@ -73,7 +73,7 @@ function drawwords(context, assignments) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     if (assignments === undefined) {
-        assignments = { red: [], blue: [], ass: [] };
+        assignments = { red: [], blue: [], green: [], ass: [] };
     }
 
     var words = loadWords();
@@ -82,11 +82,13 @@ function drawwords(context, assignments) {
     for (i = 0; i < words.length; i += 1) {
         p = to2d(i);
         if (words[i] === 'r') {
-            drawImage(context, p, 'red', i % 9);
+            drawImage(context, p, 'red', i % 10);
         } else if (words[i] === 'b') {
-            drawImage(context, p, 'blue', i % 9);
+            drawImage(context, p, 'blue', i % 10);
+        } else if (words[i] === 'g') {
+            drawImage(context, p, 'green', i % 7)
         } else if (words[i] === 'n') {
-            drawImage(context, p, 'neutral', i % 3);
+            drawImage(context, p, 'neutral', i % 4);
         } else if (words[i] === 'a') { // Assassin
             drawImage(context, p, 'phage.jpg');
         } else {
@@ -94,6 +96,8 @@ function drawwords(context, assignments) {
                 drawCard(context, p, words[i].toUpperCase(), '#ffb2b2');
             } else if ($.inArray(i, assignments.blue) > -1) {
                 drawCard(context, p, words[i].toUpperCase(), '#b2b2ff');
+            } else if ($.inArray(i, assignments.green) > -1) {
+                drawCard(context, p, words[i].toUpperCase(), '#b2ffb2');
             } else if ($.inArray(i, assignments.ass) > -1) {
                 drawCard(context, p, words[i].toUpperCase(), '#b2b2b2');
             } else {
@@ -223,19 +227,48 @@ $(function(){
         label: 'Assign Teams'
     }).click(function() {
         // http://stackoverflow.com/a/20066663
-        var choices = Array.apply(null, {length: 25}).map(Number.call, Number);
-        var assignments = {red: [], blue: [], ass: [] };
+        var choices = Array.apply(null, {length: 36}).map(Number.call, Number);
+        var assignments = {red: [], blue: [], green: [], ass: [] };
 
         var i;
-        for (i = 0; i < 8; i += 1) { // Each color gets at least 8 cards.
+        for (i = 0; i < 7; i += 1) { // Each color gets at least 7 cards.
             assignments.red.push(randomElement(choices));
             assignments.blue.push(randomElement(choices));
+            assignments.green.push(randomElement(choices));
         }
-        if (Math.random() > 0.5) { // Somebody gets an extra
-            assignments.red.push(randomElement(choices));
+        var firstPlayer, secondPlayer;
+        var redPositionRand = Math.random();
+        //there's a 1/3 chance of red being first, second, or third, and then within 
+        //each of those cases, a 1/2 chance of blue and green having each other position
+        if(redPositionRand < 1.0/3) {
+           firstPlayer = assignments.red;
+           if (Math.random() > 0.5) {
+               secondPlayer = assignments.blue;
+           } else {
+               secondPlayer = assignments.green;
+           }            
+        } else if (redPositionRand < 2.0/3) {
+            secondPlayer = assignments.red;
+            if (Math.random() > 0.5) {
+               firstPlayer = assignments.blue;
+            } else {
+               firstPlayer = assignments.green;
+            }    
         } else {
-            assignments.blue.push(randomElement(choices));
+            if (Math.random() > 0.5) {
+               firstPlayer = assignments.blue;
+               secondPlayer = assignments.green;
+            } else {
+               firstPlayer = assignments.green;
+               secondPlayer = assignments.blue;
+            }    
         }
+        
+        //first team gets 2 extra words, second team gets 1
+        firstPlayer.push(randomElement(choices));
+        firstPlayer.push(randomElement(choices));        
+        secondPlayer.push(randomElement(choices));
+        
         assignments.ass.push(randomElement(choices));
 
         drawwords(context, assignments);

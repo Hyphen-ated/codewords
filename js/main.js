@@ -231,7 +231,7 @@ $(function(){
         var assignments = {red: [], blue: [], green: [], ass: [] };
 
         var i;
-        for (i = 0; i < 7; i += 1) { // Each color gets at least 7 cards.
+        for (i = 0; i < 8; i += 1) { // Each color gets at least 8 cards.
             assignments.red.push(randomElement(choices));
             assignments.blue.push(randomElement(choices));
             assignments.green.push(randomElement(choices));

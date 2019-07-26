@@ -169,7 +169,7 @@ function tryUpload(event) {
     const token = loadToken();
     if (token === undefined) {
         location.href = 'https://api.imgur.com/oauth2/authorize'
-            + '?client_id=042408054523c44'
+            + '?client_id=db24325962cbfe8'
             + '&response_type=token'
             + '&state=' + readWords();
     }

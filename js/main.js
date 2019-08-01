@@ -173,7 +173,12 @@ function tryUpload(event) {
             + '&response_type=token'
             + '&state=' + readWords();
     }
+    //don't read the image for 3 seconds as a dumb hack to let the images load first
+    setTimeout(function(){getAndSendImageData(token);}, 3000);
+    
+}
 
+function getAndSendImageData(token) {
     var pngUrl = document.getElementById('c').toDataURL().replace(/^data:image\/(png|jpg);base64,/, "");
     $.ajax({
         type: 'POST',
@@ -192,6 +197,7 @@ function tryUpload(event) {
         }
     });
 }
+
 
 $(function(){
     var canvas = document.getElementById('c');

@@ -38,7 +38,7 @@ function loadWords() {
         return $('input[name=word]').map(function(i, el) { return el.value; });
     }
 
-    // Next try loading from state variable given by imgur
+    // Next try loading from   variable given by imgur
     const stateWords = getParameter('state');
     if (stateWords) {
         return stateWords.split(',', 36).map(function(el) {
@@ -215,7 +215,7 @@ $(function(){
         disabled: false,
         label: 'Edit'
     }).click(function() {
-        $('#canvas, #words, #teams, #upload').toggle();
+        $('#canvas, #words, #teams, #options, #upload, #optionsdiv').toggle();
         $(this).button('option', 'label', 'Done').off('click').click(save);
     });
 
@@ -236,49 +236,34 @@ $(function(){
         // http://stackoverflow.com/a/20066663
         var choices = Array.apply(null, {length: 36}).map(Number.call, Number);
         var assignments = {red: [], blue: [], green: [], ass: [] };
-
-        var i;
-        for (i = 0; i < 8; i += 1) { // Each color gets at least 8 cards.
-            assignments.red.push(randomElement(choices));
-            assignments.blue.push(randomElement(choices));
-            assignments.green.push(randomElement(choices));
-        }
-        var firstPlayer, secondPlayer;
-        var redPositionRand = Math.random();
-        //there's a 1/3 chance of red being first, second, or third, and then within 
-        //each of those cases, a 1/2 chance of blue and green having each other position
-        if(redPositionRand < 1.0/3) {
-           firstPlayer = assignments.red;
-           if (Math.random() > 0.5) {
-               secondPlayer = assignments.blue;
-           } else {
-               secondPlayer = assignments.green;
-           }            
-        } else if (redPositionRand < 2.0/3) {
-            secondPlayer = assignments.red;
-            if (Math.random() > 0.5) {
-               firstPlayer = assignments.blue;
-            } else {
-               firstPlayer = assignments.green;
-            }    
-        } else {
-            if (Math.random() > 0.5) {
-               firstPlayer = assignments.blue;
-               secondPlayer = assignments.green;
-            } else {
-               firstPlayer = assignments.green;
-               secondPlayer = assignments.blue;
-            }    
-        }
         
-        //first team gets 2 extra words, second team gets 1
-        firstPlayer.push(randomElement(choices));
-        firstPlayer.push(randomElement(choices));        
-        secondPlayer.push(randomElement(choices));
+        var teamOrder = [assignments.red, assignments.blue, assignments.green];
+        shuffle(teamOrder);
         
-        assignments.ass.push(randomElement(choices));
-
+        var firstCount = parseInt($('#firstteam').val());
+        var secondCount = parseInt($('#secondteam').val());
+        var thirdCount = parseInt($('#thirdteam').val());
+        var assassinCount = parseInt($('#assassins').val());
+        for(var i = 0; i < firstCount; ++i) {
+            teamOrder[0].push(randomElement(choices));
+        }
+        for(var i = 0; i < secondCount; ++i) {
+            teamOrder[1].push(randomElement(choices));
+        }        
+        for(var i = 0; i < thirdCount; ++i) {
+            teamOrder[2].push(randomElement(choices));
+        }
+        for(var i = 0; i < assassinCount; ++i) {
+            assignments.ass.push(randomElement(choices));
+        }        
         drawwords(context, assignments);
+    });
+    
+    $('#options').button({
+        disabled: false,
+        label: 'Word Counts'
+    }).click(function() {
+        $('#optionsdiv').show();
     });
 
     $('#forum').hide();

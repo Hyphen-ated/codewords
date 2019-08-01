@@ -175,7 +175,7 @@ function tryUpload(event) {
     }
     //don't read the image for 3 seconds as a dumb hack to let the images load first
     $('#forum').text("generating imgur link...").show();
-    setTimeout(function(){getAndSendImageData(token);}, 3000);
+    setTimeout(function(){getAndSendImageData(token);}, 1000);
     
 }
 

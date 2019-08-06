@@ -215,7 +215,8 @@ $(function(){
         disabled: false,
         label: 'Edit'
     }).click(function() {
-        $('#canvas, #words, #teams, #options, #upload, #optionsdiv').toggle();
+        $('#words').show();
+        $('#canvas, #teams, #options, #upload, #optionsdiv').hide();
         $(this).button('option', 'label', 'Done').off('click').click(save);
     });
 

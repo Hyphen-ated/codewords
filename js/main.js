@@ -5,12 +5,16 @@ const cheight = 155;
 const spacing = 5;
 const rounded = 10;
 
+var wordCount = 25;
+var gridWidth = 5;
+
 function drawCard(context, p, word, color) {
     context.fillStyle = color;
     roundRect(context, p.x, p.y, cwidth, cheight, rounded, true);
     context.fillStyle = '#220022';
     context.fillText(word, p.x + (cwidth / 2), p.y + (cheight / 2));
 }
+
 function drawImage(context, p, src, number) {
     var img = new Image();
     if (number === undefined) {
@@ -24,8 +28,8 @@ function drawImage(context, p, src, number) {
 }
 
 function to2d(n) {
-    const row = n % 6;
-    const col = Math.floor(n / 6);
+    const row = n % gridWidth;
+    const col = Math.floor(n / gridWidth);
     return {
         x: row * (spacing + cwidth) + spacing,
         y: col * (spacing + cheight) + spacing
@@ -34,14 +38,15 @@ function to2d(n) {
 
 function loadWords() {
     // Prefer loading from the existing text boxes
-    if ($('input[name=word]')[0].value !== '') {
-        return $('input[name=word]').map(function(i, el) { return el.value; });
+    var wordInputs = $('input[name=word]');
+    if (wordInputs.length > 0 && wordInputs[0].value !== '') {
+        return wordInputs.map(function(i, el) { return el.value; });
     }
 
-    // Next try loading from   variable given by imgur
+    // Next try loading from state variable given by imgur
     const stateWords = getParameter('state');
     if (stateWords) {
-        return stateWords.split(',', 36).map(function(el) {
+        return stateWords.split(',', wordCount).map(function(el) {
             // When imgur returns state parameter it converts ' ' to '+'
             return el.replace('+', ' ');
         });
@@ -51,19 +56,37 @@ function loadWords() {
     const paramWords = getParameter('words');
     var arry;
     if (paramWords !== undefined) {
-        arry = paramWords.split(',', 36);
+        arry = paramWords.split(',');
     } else {
         arry = [];
     }
+ 
 
     // And pad with random words
-    var i, word, words = master.slice();
-    for (i = arry.length; i < 36; i += 1) {
+    var i, word, words = [];
+    if($('#basewords').prop('checked')) {
+        words = words.concat(basewords);
+    }
+    
+    if($('#duetwords').prop('checked')) {
+        words = words.concat(duetwords);
+    }
+    
+    if (words.length == 0) {
+        //you cant have NO words. give them base
+        words = words.concat(basewords);
+    }
+    
+    for (i = arry.length; i < wordCount; i += 1) {
         // Check for duplicates, since we don't know the starting contents
         word = randomElement(words);
         if ($.inArray(word, arry) === -1) {
             arry.push(word);
         }
+    }
+
+    if (arry.length > 36) {
+        arry = arry.slice(35);
     }
 
     return arry;
@@ -79,16 +102,20 @@ function drawwords(context, assignments) {
     var words = loadWords();
     var inputs = $('input[name=word]');
     var i, p;
+    const redImgCount = 10;
+    const blueImgCount = 10;
+    const greenImgCount = 7;
+    const neutralImgCount = 4;
     for (i = 0; i < words.length; i += 1) {
         p = to2d(i);
         if (words[i] === 'r') {
-            drawImage(context, p, 'red', i % 10);
+            drawImage(context, p, 'red', i % redImgCount);
         } else if (words[i] === 'b') {
-            drawImage(context, p, 'blue', i % 10);
+            drawImage(context, p, 'blue', i % blueImgCount);
         } else if (words[i] === 'g') {
-            drawImage(context, p, 'green', i % 7)
+            drawImage(context, p, 'green', i % greenImgCount)
         } else if (words[i] === 'n') {
-            drawImage(context, p, 'neutral', i % 4);
+            drawImage(context, p, 'neutral', i % neutralImgCount);
         } else if (words[i] === 'a') { // Assassin
             drawImage(context, p, 'phage.jpg');
         } else {
@@ -104,7 +131,9 @@ function drawwords(context, assignments) {
                 drawCard(context, p, words[i].toUpperCase(), 'white');
             }
         }
-        inputs.get(i).value = words[i];
+        if(inputs.length > 0) {
+            inputs.get(i).value = words[i];
+        }
     }
 }
 
@@ -199,16 +228,64 @@ function getAndSendImageData(token) {
     });
 }
 
-
-$(function(){
-    var canvas = document.getElementById('c');
-    var context = canvas.getContext('2d');
+function getCanvasContext(canvas) {
+    var context = canvas.getContext('2d');        
     context.font = '12pt Calibri';
     context.textAlign = 'center';
     context.fillStyle = 'white';
     context.rect(0, 0, canvas.width, canvas.height);
     context.fill();
     context.fillStyle = '#220022';
+    return context;
+}
+
+function setGridSize() {
+    if ($('#5x5').is(':checked')) {
+        gridWidth = 5;
+        $('#firstteam').val(9);
+        $('#secondteam').val(8);
+        $('#thirdteam').val(0);
+
+    } else if ($('#6x6').is(':checked')) {
+        gridWidth = 6;
+        $('#firstteam').val(10);
+        $('#secondteam').val(9);
+        $('#thirdteam').val(8);
+    } else {
+        console.log("Neither 5x5 nor 6x6 is checked, this shouldn't happen, bailing out of grid resize")
+        return;
+    }
+        
+    wordCount = gridWidth * gridWidth;
+    
+    //create a 5x5 or 6x6 grid of inputs    
+    var wordContainer = $('#words');
+    wordContainer.empty();
+    for(var i = 0; i < gridWidth; ++i) {
+        var rowHtml = "<div>" + "<input name='word'/>".repeat(gridWidth)  + "</div>";
+        wordContainer.append($(rowHtml));
+    }
+    
+    var canvas = document.getElementById('c');
+    canvas.width = (gridWidth) * (spacing + cwidth) + spacing;
+    canvas.height = (gridWidth) * (spacing + cheight) + spacing;
+    var context = getCanvasContext(canvas);
+    
+    drawwords(context);
+}
+
+$(function(){
+    //figure out if we're in 5x5 or 6x6 mode
+    var words = loadWords();    
+    if (words.length > 25) {
+        $('6x6').prop('checked', true);
+        
+    }
+    setGridSize();
+      
+    var canvas = document.getElementById('c');
+    var context = getCanvasContext(canvas);
+    
     drawwords(context);
 
     $('#edit').button({
@@ -235,16 +312,24 @@ $(function(){
         label: 'Assign Teams'
     }).click(function() {
         // http://stackoverflow.com/a/20066663
-        var choices = Array.apply(null, {length: 36}).map(Number.call, Number);
+        var choices = Array.apply(null, {length: wordCount}).map(Number.call, Number);
         var assignments = {red: [], blue: [], green: [], ass: [] };
         
-        var teamOrder = [assignments.red, assignments.blue, assignments.green];
-        shuffle(teamOrder);
+        
         
         var firstCount = parseInt($('#firstteam').val());
         var secondCount = parseInt($('#secondteam').val());
         var thirdCount = parseInt($('#thirdteam').val());
         var assassinCount = parseInt($('#assassins').val());
+        
+        var teamOrder;
+        if( thirdCount == 0) {
+            teamOrder = [assignments.red, assignments.blue];
+        } else {
+            teamOrder = [assignments.red, assignments.blue, assignments.green];
+        }                
+        shuffle(teamOrder);
+        
         for(var i = 0; i < firstCount; ++i) {
             teamOrder[0].push(randomElement(choices));
         }
@@ -262,16 +347,25 @@ $(function(){
     
     $('#options').button({
         disabled: false,
-        label: 'Word Counts'
+        label: 'Options'
     }).click(function() {
-        $('#optionsdiv').show();
+        $('#optionsdiv').toggle();
     });
 
     $('#forum').hide();
     $('#upload').button({
         disabled: false,
-        label: 'Upload to Imgur'
+        label: 'Imgur Upload'
     }).click(tryUpload);
+
+
+    $("input[type='radio']").checkboxradio().click(function() {
+        setGridSize();
+    });
+    
+    $("input[type='checkbox']").checkboxradio();
+    
+    $(".countinput").spinner();
 
     if (getParameter('state') !== undefined) {
         tryUpload();

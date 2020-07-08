@@ -2,24 +2,19 @@
 <html>
     <head>
         <script src='https://code.jquery.com/jquery-2.1.4.min.js'> </script>
-        <script src='https://code.jquery.com/ui/1.11.4/jquery-ui.min.js'> </script>
+        <script src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'> </script>
         <script src='js/js.cookie.js'> </script>
         <script src='js/functions.js'> </script>
-        <script src='js/master.js'> </script>
+        <script src='js/wordlists.js'> </script>
         <script src='js/main.js'> </script>
-        <link rel='stylesheet' href='https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css' />
+        <link rel='stylesheet' href='https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css' />
+        <meta charset='utf-8'>
     </head>
     <body>
         <div id='canvas' style='display:block'>
-            <canvas id='c' width='701' height='965'></canvas>
+            <canvas id='c' width='0' height='0'></canvas>
         </div>
         <div id='words' style='display:none'>
-            <div><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/></div>
-            <div><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/></div>
-            <div><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/></div>
-            <div><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/></div>
-            <div><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/></div>
-            <div><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/><input name='word'/></div>
         </div>
         <div>
             <label
@@ -36,10 +31,31 @@
             <button id='upload'>Upload to Imgur</button>
         </div>
         <div id="optionsdiv" style="display: none">
-            1st team: <input id="firstteam" type=number value="10"></input><br>
-            2nd team: <input id="secondteam" type=number value="9"></input><br>
-            3rd team: <input id="thirdteam" type=number value="8"></input><br>
-            Assassins: <input id="assassins" type=number value="1"></input><br>
+
+            <fieldset data-role="controlgroup" data-type="horizontal" style="display: inline-block">
+                <legend>Grid Size</legend> 
+                <label for="5x5" >5x5</label>
+                <input type="radio" id="5x5" name="gridsize" value="5" checked="checked">
+                <label for="6x6">6x6</label>
+                <input type="radio" id="6x6" name="gridsize" value="6">
+            </fieldset>
+            
+            <fieldset data-role="controlgroup" data-type="horizontal" data-theme="2" style="display: inline-block">
+                <legend>Wordlist</legend>
+                <label for="basewords">Base</label>
+                <input type="checkbox" id="basewords" checked="checked">
+                <label for="duetwords">Duet</label>
+                <input type="checkbox" id="duetwords" checked="checked">
+            </fieldset>
+            <br>
+            <label for="firstteam">1st team words:</label>
+            <input id="firstteam" class="countinput" value="10"></input><br>
+            <label for="secondteam">2nd team words:</label>
+            <input id="secondteam" class="countinput" value="9"></input><br>
+            <label for="thirdteam">3rd team words:</label>
+            <input id="thirdteam"  class="countinput" value="8"></input><br>
+            <label for="assassins">Assassins:</label>
+            <input id="assassins" class="countinput" value="1"></input><br>
         </div> 
 
         <div id='dialog'></div>

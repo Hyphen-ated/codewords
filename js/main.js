@@ -72,6 +72,16 @@ function loadWords() {
         words = words.concat(duetwords);
     }
     
+    if($('#undercoverwords').prop('checked')) {
+        words = words.concat(undercoverwords);
+    }
+        
+    if($('#mtgwords').prop('checked')) {
+        words = words.concat(mtgwords);
+    }
+    
+    
+    
     if (words.length == 0) {
         //you cant have NO words. give them base
         words = words.concat(basewords);

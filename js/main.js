@@ -108,27 +108,28 @@ function drawwords(context, assignments) {
     const neutralImgCount = 4;
     for (i = 0; i < words.length; i += 1) {
         p = to2d(i);
-        if (words[i] === 'r') {
+        var currentWord = words[i].toLowerCase()
+        if (currentWord === 'r') {
             drawImage(context, p, 'red', i % redImgCount);
-        } else if (words[i] === 'b') {
+        } else if (currentWord === 'b') {
             drawImage(context, p, 'blue', i % blueImgCount);
-        } else if (words[i] === 'g') {
+        } else if (currentWord === 'g') {
             drawImage(context, p, 'green', i % greenImgCount)
-        } else if (words[i] === 'n') {
+        } else if (currentWord === 'n') {
             drawImage(context, p, 'neutral', i % neutralImgCount);
-        } else if (words[i] === 'a') { // Assassin
+        } else if (currentWord === 'a') { // Assassin
             drawImage(context, p, 'phage.jpg');
         } else {
             if ($.inArray(i, assignments.red) > -1) {
-                drawCard(context, p, words[i].toUpperCase(), '#ffb2b2');
+                drawCard(context, p, currentWord.toUpperCase(), '#ffb2b2');
             } else if ($.inArray(i, assignments.blue) > -1) {
-                drawCard(context, p, words[i].toUpperCase(), '#b2b2ff');
+                drawCard(context, p, currentWord.toUpperCase(), '#b2b2ff');
             } else if ($.inArray(i, assignments.green) > -1) {
-                drawCard(context, p, words[i].toUpperCase(), '#b2ffb2');
+                drawCard(context, p, currentWord.toUpperCase(), '#b2ffb2');
             } else if ($.inArray(i, assignments.ass) > -1) {
-                drawCard(context, p, words[i].toUpperCase(), '#b2b2b2');
+                drawCard(context, p, currentWord.toUpperCase(), '#b2b2b2');
             } else {
-                drawCard(context, p, words[i].toUpperCase(), 'white');
+                drawCard(context, p, currentWord.toUpperCase(), 'white');
             }
         }
         if(i < inputs.length) {

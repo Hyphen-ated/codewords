@@ -95,7 +95,9 @@ function loadWords() {
     return arry;
 }
 
-function drawwords(context, assignments) {
+function drawwords(canvas, assignments) {
+
+    var context = getClearCanvasContext(canvas);
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     if (assignments === undefined) {
@@ -232,7 +234,7 @@ function getAndSendImageData(token) {
     });
 }
 
-function getCanvasContext(canvas) {
+function getClearCanvasContext(canvas) {
     var context = canvas.getContext('2d');        
     context.font = '12pt Calibri';
     context.textAlign = 'center';
@@ -282,9 +284,9 @@ function setGridSize(knownSize) {
     var canvas = document.getElementById('c');
     canvas.width = (gridWidth) * (spacing + cwidth) + spacing;
     canvas.height = (gridWidth) * (spacing + cheight) + spacing;
-    var context = getCanvasContext(canvas);
     
-    drawwords(context);
+    
+    drawwords(canvas);
 }
 
 $(function(){
@@ -299,9 +301,8 @@ $(function(){
     setGridSize(size);
       
     var canvas = document.getElementById('c');
-    var context = getCanvasContext(canvas);
     
-    drawwords(context);
+    drawwords(canvas);
 
     $('#edit').button({
         disabled: false,
@@ -316,10 +317,14 @@ $(function(){
         disabled: false,
         label: 'New Board'
     }).click(function() {
-        document.location.hash = '';
-        document.location.search = '';
+        if(document.location.hash && document.location.hash.length > 0) {
+            document.location.hash = '';
+        }
+        if(document.location.search && document.location.search.length > 0) {
+            document.location.search = '';
+        }
         $('input[name=word]').each(function() { this.value = ''; });
-        drawwords(context);
+        drawwords(canvas);
     });
 
     $('#teams').button({
@@ -357,7 +362,7 @@ $(function(){
         for(var i = 0; i < assassinCount; ++i) {
             assignments.ass.push(randomElement(choices));
         }        
-        drawwords(context, assignments);
+        drawwords(canvas, assignments);
     });
     
     $('#options').button({

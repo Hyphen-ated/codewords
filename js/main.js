@@ -66,37 +66,30 @@ function loadWords() {
     var i, word, words = [];
     if($('#basewords').prop('checked')) {
         words = words.concat(basewords);
-    }
-    
+    }    
     if($('#duetwords').prop('checked')) {
         words = words.concat(duetwords);
-    }
-    
+    }    
     if($('#undercoverwords').prop('checked')) {
         words = words.concat(undercoverwords);
-    }
-        
+    }        
     if($('#mtgwords').prop('checked')) {
         words = words.concat(mtgwords);
     }
     
-    
-    
+        
     if (words.length == 0) {
         //you cant have NO words. give them base
         words = words.concat(basewords);
     }
     
-    for (i = arry.length; i < wordCount; i += 1) {
-        // Check for duplicates, since we don't know the starting contents
-        word = randomElement(words);
+    while(arry.length < wordCount) {
+        // Check for duplicates, since we don't know the starting contents.
+        // and making sure all wordlists are disjoint would be kind of a pain.
+        word = randomElement(words).toLowerCase();
         if ($.inArray(word, arry) === -1) {
             arry.push(word);
         }
-    }
-
-    if (arry.length > 36) {
-        arry = arry.slice(35);
     }
 
     return arry;

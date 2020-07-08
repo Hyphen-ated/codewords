@@ -131,7 +131,7 @@ function drawwords(context, assignments) {
                 drawCard(context, p, words[i].toUpperCase(), 'white');
             }
         }
-        if(inputs.length > 0) {
+        if(i < inputs.length) {
             inputs.get(i).value = words[i];
         }
     }
@@ -239,15 +239,24 @@ function getCanvasContext(canvas) {
     return context;
 }
 
-function setGridSize() {
-    if ($('#5x5').is(':checked')) {
-        gridWidth = 5;
+function setGridSize(knownSize) {
+
+    if (knownSize === undefined) {
+        if ($('#6x6').prop('checked')) {
+            gridWidth = 6;
+        } else {
+            gridWidth = 5;
+        }
+    } else {
+        gridWidth = knownSize;
+    }
+
+    
+    if (gridWidth === 5) {
         $('#firstteam').val(9);
         $('#secondteam').val(8);
         $('#thirdteam').val(0);
-
-    } else if ($('#6x6').is(':checked')) {
-        gridWidth = 6;
+    } else if (gridWidth === 6) {
         $('#firstteam').val(10);
         $('#secondteam').val(9);
         $('#thirdteam').val(8);
@@ -277,11 +286,13 @@ function setGridSize() {
 $(function(){
     //figure out if we're in 5x5 or 6x6 mode
     var words = loadWords();    
+    var size = 5;
     if (words.length > 25) {
-        $('6x6').prop('checked', true);
-        
+        $('#6x6').prop('checked', true);
+        $('#5x5').prop('checked', false);
+        size = 6;
     }
-    setGridSize();
+    setGridSize(size);
       
     var canvas = document.getElementById('c');
     var context = getCanvasContext(canvas);

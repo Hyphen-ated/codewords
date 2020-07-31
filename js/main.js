@@ -48,7 +48,7 @@ function loadWords() {
     if (stateWords) {
         return stateWords.split(',', wordCount).map(function(el) {
             // When imgur returns state parameter it converts ' ' to '+'
-            return el.replace('+', ' ');
+            return el.replaceAll('+', ' ');
         });
     }
 
